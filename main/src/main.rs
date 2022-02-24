@@ -1,4 +1,3 @@
-use case::{Case, CasePluginOption};
 use plugin_core::echo;
 use replace::ReplacePluginOption;
 use std::io::{stdin, Result};
@@ -12,12 +11,12 @@ fn main() -> Result<()> {
         vec![
             (
                 "replace",
-                &ReplacePluginOption {
+                Some(&ReplacePluginOption {
                     from: '\'',
                     to: "^",
-                },
+                }),
             ),
-            ("case", &CasePluginOption { case: Case::Toggle }),
+            ("case", None),
         ],
     );
 

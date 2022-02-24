@@ -21,8 +21,8 @@ impl Default for CasePluginOption {
 }
 
 #[no_mangle]
-pub fn transform<'a>(s: String, option: &'a CasePluginOption) -> String {
-    match option.case {
+pub fn transform<'a>(s: String, option: Option<&'a CasePluginOption>) -> String {
+    match option.unwrap_or(&CasePluginOption::default()).case {
         Case::Lower => s.to_lowercase(),
         Case::Upper => s.to_uppercase(),
         Case::Toggle => s
@@ -48,25 +48,20 @@ mod test {
     #[test]
     fn test_lower() {
         assert_eq!(
-            transform(
-                String::from("HelLo, WorLd!"),
-                &CasePluginOption { case: Case::Lower }
-            ),
+            transform(String::from("HelLo, WorLd!"), None),
             String::from("hello, world!")
         );
 
         assert_eq!(
             transform(
                 String::from("안녕하세요 こんにちは 你好"),
-                &CasePluginOption { case: Case::Lower }
+                Some(&CasePluginOption { case: Case::Lower })
             ),
             String::from("안녕하세요 こんにちは 你好")
         );
 
         assert_eq!(
-            transform(String::from("Grüße, Jürgen ❤ 😇"), {
-                &CasePluginOption { case: Case::Lower }
-            }),
+            transform(String::from("Grüße, Jürgen ❤ 😇"), None),
             String::from("grüße, jürgen ❤ 😇")
         );
     }
@@ -76,7 +71,7 @@ mod test {
         assert_eq!(
             transform(
                 String::from("HelLo, WorLd!"),
-                &CasePluginOption { case: Case::Upper }
+                Some(&CasePluginOption { case: Case::Upper })
             ),
             String::from("HELLO, WORLD!")
         );
@@ -84,14 +79,14 @@ mod test {
         assert_eq!(
             transform(
                 String::from("안녕하세요 こんにちは 你好"),
-                &CasePluginOption { case: Case::Upper }
+                Some(&CasePluginOption { case: Case::Upper })
             ),
             String::from("안녕하세요 こんにちは 你好")
         );
 
         assert_eq!(
             transform(String::from("Grüße, Jürgen ❤ 😇"), {
-                &CasePluginOption { case: Case::Upper }
+                Some(&CasePluginOption { case: Case::Upper })
             }),
             String::from("GRÜSSE, JÜRGEN ❤ 😇")
         );
@@ -102,7 +97,7 @@ mod test {
         assert_eq!(
             transform(
                 String::from("HelLo, WorLd!"),
-                &CasePluginOption { case: Case::Toggle }
+                Some(&CasePluginOption { case: Case::Toggle })
             ),
             String::from("hELlO, wORlD!")
         );
@@ -110,14 +105,14 @@ mod test {
         assert_eq!(
             transform(
                 String::from("안녕하세요 こんにちは 你好"),
-                &CasePluginOption { case: Case::Toggle }
+                Some(&CasePluginOption { case: Case::Toggle })
             ),
             String::from("안녕하세요 こんにちは 你好")
         );
 
         assert_eq!(
             transform(String::from("Grüße, Jürgen ❤ 😇"), {
-                &CasePluginOption { case: Case::Toggle }
+                Some(&CasePluginOption { case: Case::Toggle })
             }),
             String::from("gRÜSE, jÜRGEN ❤ 😇")
         );
