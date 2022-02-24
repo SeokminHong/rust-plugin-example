@@ -19,6 +19,6 @@ impl<'a> Default for ReplacePluginOption<'a> {
 
 #[no_mangle]
 pub fn transform<'a, 'b>(s: String, option: fn() -> &'a ReplacePluginOption<'b>) -> String {
-    let ReplacePluginOption { from, to } = option();
-    s.replace(*from, to)
+    let ReplacePluginOption { from, to } = *option();
+    s.replace(from, to)
 }
