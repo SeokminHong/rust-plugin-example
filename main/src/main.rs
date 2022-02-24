@@ -6,11 +6,14 @@ fn main() {
     echo(
         "'Hello, world!'",
         vec![
-            ("replace", || &ReplacePluginOption {
-                from: '\'',
-                to: "^",
-            }),
-            ("case", || &CasePluginOption { case: Case::Toggle }),
+            (
+                "replace",
+                &ReplacePluginOption {
+                    from: '\'',
+                    to: "^",
+                },
+            ),
+            ("case", &CasePluginOption { case: Case::Toggle }),
         ],
     );
 }
