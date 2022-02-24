@@ -1,5 +1,6 @@
+use case::CasePlugin;
 use plugin_core::echo;
-use replace::ReplacePluginOption;
+use replace::ReplacePlugin;
 use std::io::{stdin, Result};
 
 fn main() -> Result<()> {
@@ -9,14 +10,11 @@ fn main() -> Result<()> {
     echo(
         buffer,
         vec![
-            (
-                "replace",
-                Some(&ReplacePluginOption {
-                    from: '\'',
-                    to: "^",
-                }),
-            ),
-            ("case", None),
+            &ReplacePlugin {
+                from: '\'',
+                to: "^",
+            },
+            &CasePlugin::default(),
         ],
     );
 

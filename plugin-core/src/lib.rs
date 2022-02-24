@@ -1,15 +1,17 @@
 use libloading::{library_filename, Library};
 
-pub trait PluginOption {}
+pub trait Plugin {
+    fn name(&self) -> &str;
+}
 
-pub fn echo<S: Into<String>>(s: S, plugins: Vec<(&str, Option<&'_ dyn PluginOption>)>) -> () {
-    let result = plugins.into_iter().fold(s.into(), |acc, (plugin, option)| {
-        let lib = unsafe { Library::new(library_filename(plugin)).unwrap() };
+pub fn echo<S: Into<String>>(s: S, plugins: Vec<&'_ dyn Plugin>) -> () {
+    let result = plugins.into_iter().fold(s.into(), |acc, plugin| {
+        let lib = unsafe { Library::new(library_filename(plugin.name())).unwrap() };
         let func = unsafe {
-            lib.get::<fn(String, Option<&'_ dyn PluginOption>) -> String>(b"transform")
+            lib.get::<fn(String, &'_ dyn Plugin) -> String>(b"transform")
                 .unwrap()
         };
-        func(acc, option)
+        func(acc, plugin)
     });
     println!("{}", result)
 }

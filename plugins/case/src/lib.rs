@@ -1,4 +1,4 @@
-use plugin_core::PluginOption;
+use plugin_core::Plugin;
 
 #[derive(Debug, Clone)]
 pub enum Case {
@@ -8,21 +8,25 @@ pub enum Case {
 }
 
 #[derive(Debug)]
-pub struct CasePluginOption {
+pub struct CasePlugin {
     pub case: Case,
 }
 
-impl PluginOption for CasePluginOption {}
+impl Plugin for CasePlugin {
+    fn name(&self) -> &str {
+        option_env!("CARGO_CRATE_NAME").expect("Failed to get crate name")
+    }
+}
 
-impl Default for CasePluginOption {
+impl Default for CasePlugin {
     fn default() -> Self {
-        CasePluginOption { case: Case::Lower }
+        CasePlugin { case: Case::Lower }
     }
 }
 
 #[no_mangle]
-pub fn transform(s: String, option: Option<&'_ CasePluginOption>) -> String {
-    match option.unwrap_or(&CasePluginOption::default()).case {
+pub fn transform(s: String, option: &'_ CasePlugin) -> String {
+    match option.case {
         Case::Lower => s.to_lowercase(),
         Case::Upper => s.to_uppercase(),
         Case::Toggle => s
@@ -48,20 +52,20 @@ mod test {
     #[test]
     fn test_lower() {
         assert_eq!(
-            transform(String::from("HelLo, WorLd!"), None),
+            transform(String::from("HelLo, WorLd!"), &CasePlugin::default()),
             String::from("hello, world!")
         );
 
         assert_eq!(
             transform(
                 String::from("안녕하세요 こんにちは 你好"),
-                Some(&CasePluginOption { case: Case::Lower })
+                &CasePlugin { case: Case::Lower }
             ),
             String::from("안녕하세요 こんにちは 你好")
         );
 
         assert_eq!(
-            transform(String::from("Grüße, Jürgen ❤ 😇"), None),
+            transform(String::from("Grüße, Jürgen ❤ 😇"), &CasePlugin::default()),
             String::from("grüße, jürgen ❤ 😇")
         );
     }
@@ -71,7 +75,7 @@ mod test {
         assert_eq!(
             transform(
                 String::from("HelLo, WorLd!"),
-                Some(&CasePluginOption { case: Case::Upper })
+                &CasePlugin { case: Case::Upper }
             ),
             String::from("HELLO, WORLD!")
         );
@@ -79,14 +83,14 @@ mod test {
         assert_eq!(
             transform(
                 String::from("안녕하세요 こんにちは 你好"),
-                Some(&CasePluginOption { case: Case::Upper })
+                &CasePlugin { case: Case::Upper }
             ),
             String::from("안녕하세요 こんにちは 你好")
         );
 
         assert_eq!(
             transform(String::from("Grüße, Jürgen ❤ 😇"), {
-                Some(&CasePluginOption { case: Case::Upper })
+                &CasePlugin { case: Case::Upper }
             }),
             String::from("GRÜSSE, JÜRGEN ❤ 😇")
         );
@@ -97,7 +101,7 @@ mod test {
         assert_eq!(
             transform(
                 String::from("HelLo, WorLd!"),
-                Some(&CasePluginOption { case: Case::Toggle })
+                &CasePlugin { case: Case::Toggle }
             ),
             String::from("hELlO, wORlD!")
         );
@@ -105,14 +109,14 @@ mod test {
         assert_eq!(
             transform(
                 String::from("안녕하세요 こんにちは 你好"),
-                Some(&CasePluginOption { case: Case::Toggle })
+                &CasePlugin { case: Case::Toggle }
             ),
             String::from("안녕하세요 こんにちは 你好")
         );
 
         assert_eq!(
             transform(String::from("Grüße, Jürgen ❤ 😇"), {
-                Some(&CasePluginOption { case: Case::Toggle })
+                &CasePlugin { case: Case::Toggle }
             }),
             String::from("gRÜSE, jÜRGEN ❤ 😇")
         );

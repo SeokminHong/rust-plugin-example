@@ -1,16 +1,20 @@
-use plugin_core::PluginOption;
+use plugin_core::Plugin;
 
 #[derive(Debug)]
-pub struct ReplacePluginOption<'a> {
+pub struct ReplacePlugin<'a> {
     pub from: char,
     pub to: &'a str,
 }
 
-impl<'a> PluginOption for ReplacePluginOption<'a> {}
+impl<'a> Plugin for ReplacePlugin<'a> {
+    fn name(&self) -> &str {
+        option_env!("CARGO_CRATE_NAME").expect("Failed to get crate name")
+    }
+}
 
-impl<'a> Default for ReplacePluginOption<'a> {
+impl<'a> Default for ReplacePlugin<'a> {
     fn default() -> Self {
-        ReplacePluginOption {
+        ReplacePlugin {
             from: '\'',
             to: "\"",
         }
@@ -18,7 +22,7 @@ impl<'a> Default for ReplacePluginOption<'a> {
 }
 
 #[no_mangle]
-pub fn transform<'a>(s: String, option: Option<&'_ ReplacePluginOption<'a>>) -> String {
-    let ReplacePluginOption { from, to } = *option.unwrap_or(&ReplacePluginOption::default());
+pub fn transform(s: String, option: Option<&'_ ReplacePlugin<'_>>) -> String {
+    let ReplacePlugin { from, to } = *option.unwrap_or(&ReplacePlugin::default());
     s.replace(from, to)
 }
