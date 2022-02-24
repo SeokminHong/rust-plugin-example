@@ -21,7 +21,7 @@ impl Default for CasePluginOption {
 }
 
 #[no_mangle]
-pub fn transform<'a>(s: String, option: Option<&'a CasePluginOption>) -> String {
+pub fn transform(s: String, option: Option<&'_ CasePluginOption>) -> String {
     match option.unwrap_or(&CasePluginOption::default()).case {
         Case::Lower => s.to_lowercase(),
         Case::Upper => s.to_uppercase(),

@@ -18,7 +18,7 @@ impl<'a> Default for ReplacePluginOption<'a> {
 }
 
 #[no_mangle]
-pub fn transform<'a, 'b>(s: String, option: Option<&'a ReplacePluginOption<'b>>) -> String {
+pub fn transform<'a>(s: String, option: Option<&'_ ReplacePluginOption<'a>>) -> String {
     let ReplacePluginOption { from, to } = *option.unwrap_or(&ReplacePluginOption::default());
     s.replace(from, to)
 }
