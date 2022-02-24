@@ -1,10 +1,14 @@
 use case::{Case, CasePluginOption};
 use plugin_core::echo;
 use replace::ReplacePluginOption;
+use std::io::{stdin, Result};
 
-fn main() {
+fn main() -> Result<()> {
+    let mut buffer = String::new();
+    stdin().read_line(&mut buffer)?;
+
     echo(
-        "'Hello, world!'",
+        buffer,
         vec![
             (
                 "replace",
@@ -16,4 +20,6 @@ fn main() {
             ("case", &CasePluginOption { case: Case::Toggle }),
         ],
     );
+
+    Ok(())
 }
