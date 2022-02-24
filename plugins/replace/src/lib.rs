@@ -22,7 +22,7 @@ impl<'a> Default for ReplacePlugin<'a> {
 }
 
 #[no_mangle]
-pub fn transform(s: String, option: Option<&'_ ReplacePlugin<'_>>) -> String {
-    let ReplacePlugin { from, to } = *option.unwrap_or(&ReplacePlugin::default());
+pub fn transform(s: String, option: &'_ ReplacePlugin<'_>) -> String {
+    let ReplacePlugin { from, to } = *option;
     s.replace(from, to)
 }
