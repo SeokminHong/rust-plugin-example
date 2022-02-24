@@ -2,6 +2,8 @@
   "rust-analyzer.linkedProjects": [
     "main/Cargo.toml",
     "plugin-core/Cargo.toml",
+
+    "plugins/case/Cargo.toml",
     "plugins/replace/Cargo.toml"
   ]
 }

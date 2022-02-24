@@ -18,7 +18,7 @@ impl<'a> Default for ReplacePluginOption<'a> {
 }
 
 #[no_mangle]
-pub fn transform(s: String, option: Option<Box<ReplacePluginOption>>) -> String {
-    let option = option.unwrap_or_default();
-    s.replace(option.from, option.to)
+pub fn transform<'a, 'b>(s: String, option: fn() -> &'a ReplacePluginOption<'b>) -> String {
+    let ReplacePluginOption { from, to } = option();
+    s.replace(*from, to)
 }

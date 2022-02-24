@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 plugin-core = { path = "../plugin-core" }
 replace = { path = "../plugins/replace" }
+case = { path = "../plugins/case" }
